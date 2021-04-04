@@ -1,0 +1,194 @@
+---
+title: "Causal Inference and Designed Experiments"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+```
+
+In 506 & 506, we have used predictive language for discussing linear models. In particular, we have used words like, "the expected difference between a unit with factor y and another unit with factor x" that focus on differences between units rather than differences within a unit.
+
+\vfill
+
+Now we introduce causal language focusing on differences within a unit. 
+
+
+\vfill
+
+Causal inference is generally focused on a comparison of potential outcomes. 
+
+
+\vfill
+
+The textbook has a running example of taking fish oil supplements, we will consider a clinical trials setting with COVID-19 vaccination looking at antibody measurements for individuals with and without a vaccination.
+
+\vfill
+
+Let $y_i^0$ be the antibody measurement (IgG) for individual $i$ having received a control and $y_i^1$ be the antibody measurement (IgG) for individual $i$ having received a vaccine.
+
+
+\vfill
+
+In the experiment, individual $i$ either receives the control or the vaccine, hence, only one potential outcome is observed, which is denoted as the _factual outcome._ 
+
+\vfill
+
+
+
+\vfill
+
+\newpage
+
+Unfortunately, we cannot observe both $y_i^1$ and $y_i^0$
+
+
+\vfill
+
+If treatments are randomly assigned, we can estimate an "average causal effect" across the respondents, but can't say anything about unit $i$.
+
+\vfill
+
+Another approach would be to attempt to have a replacement for one of the counterfactuals. For instance, could a pre-score be used in place of $y_i^0$? 
+
+
+\vfill
+
+An experiment could also be conceived that randomizes the ordering of the assignment such that each unit receives both treatments over the course of the study, 
+
+\vfill
+
+The same idea applies for multiple treatment levels, continuous treatments...
+
+\vfill
+
+Again, we cannot estimate $\tau_i = y_i^1 - y_i^0$, but we can estimate the sample average treatment effect (SATE)
+
+
+
+\vfill
+
+
+
+\vfill
+
+With statistics, the interest is rarely just the sample itself, but rather a broader population. Hence the target is often
+
+
+
+\newpage
+
+If the treatment and control groups are not similar, then $\tau_{SATE} = \frac{1}{n} \sum_i^n y_i^1 -  \frac{1}{n} \sum_i^n y_i^0$
+
+\vfill
+
+### Randomized experiments
+
+Randomization can ensure treatment and control groups are balanced, on average (in expectation).
+
+\vfill
+
+In a completely randomized experiment, the probability of being assigned any given treatment is the same for all units.
+
+\vfill
+
+Note, that a completely randomized experiment does not guarantee a balanced sample for any particular realization.
+
+```{r}
+set.seed(10)
+tibble(factor = sample(rep(c('blue','gold'), each =4),4)) %>% 
+  bind_cols(tibble(treatment =rep('treat', 4))) %>%
+  kable()
+```
+
+\vfill
+
+#### Design Notation
+
+An _unbiased estimate_ is correct, on average. In other words, the mean of the sampling distribution is equal to the estimand. 
+
+\vfill
+
+The sampling distribution of an _efficient_ estimate has small variance.
+
+\vfill
+
+Similarly, using the randomization distribution (based on repeated allocation of treatments) of the estimate 
+
+\vfill
+
+\newpage
+
+If there are other observable factors that would be expected to result in different outcomes, this can be used in the experimental design. Recall the completely randomized design that resulted in all of th "blue" units being assigned the treatment.
+
+```{r}
+set.seed(10)
+tibble(factor = sample(rep(c('blue','gold'), each =4),4)) %>% 
+  bind_cols(tibble(treatment =rep('treat', 4))) %>%
+  kable()
+```
+
+\vfill
+
+A randomized block design allocates treatments and controls within each group of similar units.
+
+```{r}
+tibble(block = rep(c('blue','gold'), each =4), 
+       level = c(sample(rep(c('treat','control'), each = 2)),sample(rep(c('treat','control'), each = 2)))) %>% kable()
+```
+
+\vfill
+
+
+
+\vfill
+
+Blocks are defined by pre-treatment variables. Blocks can be defined by anything that might be expected to predictive of the outcome.
+
+\vfill
+
+Other experimental design structures include
+
+\vfill
+
+
+\vfill
+
+
+
+\vfill
+
+Ideally any information about differences in units would be accounted for in the design phase, but it can also be included in the analysis.
+
+\newpage
+
+#### Ignorability
+
+With ignorability the assignment of a treatment is independent of the potential outcomes. With a complete randomized design, this can be written as 
+
+
+\vfill
+
+
+\vfill
+
+Randomized blocks use conditional ignorability
+
+
+
+
+\vfill
+
+#### Efficiency
+
+Efficiency is a measure of the variability in the estimator.
+
+\vfill
+
+Using blocking variables can result in a more efficient estimator if the units within the blocks are similar, but the blocks are different.
+
+\vfill
+
+Regression methods can also be used to account for pre-treatment variables and result in a more efficient estimator.
