@@ -1,0 +1,56 @@
+---
+title: "Causal Inference and Regression"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+set.seed(04152021)
+```
+
+
+Recall, we can adjust for pre-treatment variables (categorical/blocks or continuous)
+
+$$y_i =  \tau z_i + X_i \beta + \epsilon_i,$$
+where $z_i$ is an indicator for treatment and $\tau$ is the average treatment effect.
+
+\vfill
+
+Even if a blocking design isn't used, pre-treatment variables can be used to account for differences between the control and treatment groups.
+
+\vfill
+
+or in a hierarchical framework (with random effects) as
+
+$$y_i =  \tau z_i + \theta_{j[i]} + \epsilon_i,$$
+where $\theta_j \sim N(0, \sigma^2_\theta)$ is a random effect centered at zero.
+
+```{r, eval = F}
+stan_glmer(response ~ treatment + (1|block), data = dat)
+```
+
+\vfill
+
+Generally, blocks are included as random effects if they are not directly of interest, such as individuals. However, if the blocking factor is of interest, such as locations with sun vs. shade in a plot, fixed effects are common.
+
+\vfill
+
+While these model specifications control for blocks, both assume constant treatment effects across groups.
+
+\vfill
+
+Interactions (or varying treatment effects through hierarchical models) can be used to capture different treatment levels.
+
+\newpage
+
+Stratification, which is similar to blocking, is a technique to divide a population into groups and estimate totals within each strata. Then population totals can be computed by combining the strata with appropriate sampling weights.
+
+\vfill
+
+_Post-stratification_ uses the same idea of estimating totals within groups, but doesn't require (need?) to have groups pre-defined as part of the sampling approach. Post-stratification can be used to both estimate totals with groups, and, adjust for differences between the proportion of each class in the sample and population (using weights).
+
+\vfill
+
+The post stratification estimates are also conditional average treatment effects.

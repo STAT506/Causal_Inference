@@ -1,0 +1,48 @@
+---
+title: "Causal Inference and Regression"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+set.seed(04152021)
+```
+
+
+Recall, we can adjust for pre-treatment variables (categorical/blocks or continuous)
+
+$$y_i =  \tau z_i + X_i \beta + \epsilon_i,$$
+
+\vfill
+
+
+
+\vfill
+
+
+
+```{r, eval = F}
+stan_glmer(response ~ treatment + (1|block), data = dat)
+```
+
+\vfill
+
+Generally, blocks are included as random effects if they are not directly of interest, such as individuals. However, if the blocking factor is of interest, such as locations with sun vs. shade in a plot, fixed effects are common.
+
+\vfill
+
+
+
+\vfill
+
+
+\newpage
+
+
+\vfill
+
+
+\vfill
+
