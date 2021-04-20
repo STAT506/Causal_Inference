@@ -1,0 +1,151 @@
+---
+title: "Causal Inference and Regression"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+set.seed(04152021)
+```
+
+While adjusting for pre-treatment variables is advised, post treatment variables should not be treated in the same fashion.
+
+\vfill
+
+Recall the idea of ignorability, where $y^0, y^i \perp z$, then under randomization there will be no differences, on average, in the distribution of potential outcomes is the same across levels of the treatment.
+
+$$y = \tau z + \epsilon$$ 
+
+gives an unbiased estimate of $\tau$
+
+\vfill
+
+Conditional ignorability also holds on a pretreatment variable, $x$ such that $y^0, y^i \perp z | x$ then under randomization there will be no differences, on average, in the distribution of potential outcomes is the same across levels of the treatment after controlling for x.
+
+$$y = \tau z + x \beta + \epsilon$$ 
+also gives an unbiased estimator of $\tau$
+
+\vfill
+
+However for a post-treatment variable $q$, we cannot, in general, state that $y^0, y^i \perp z | x, q$. The issue here is that q can be influenced by the treatment. The result is that 
+
+$$y = \tau^* z + x \beta^* + \delta q + \epsilon$$ 
+does not provide an unbiased estimate of $\tau$.
+
+\vfill
+
+\newpage
+
+The variable $q$ is often referred to as an intermediate variables. The issue is when the intermediate variables is influenced by the treatment. Thus the potential outcomes of the intermediate variable $q^1 \neq q^0$.
+
+\vfill
+
+Hence, estimating the treatment effects, conditional on $q$ would require accounting for both potential outcomes in $q$.
+
+\vfill
+
+ROS states "randomized experiments are a black box approach to causal inference. We see what goes in (treatments) and see what comes out (outcomes), and we can make inferences about the relationships between these inputs and outputs."
+
+\vfill
+
+Note that post treatment "mediating variables" induce challenges in interpreting the "causal paths" and require more thought than using regression for intermediate outcomes.
+
+\vfill
+
+\newpage
+
+### Observational studies and causal inference
+
+We have looked at causal inference through the lens of randomized, designed experiments. Designed experiments, and ignorability in treatment assignment (based on potential outcomes), enabled estimates of average treatment effects.
+
+\vfill
+
+Unfortunately, random treatment assignment is not always possible.
+
+\vfill
+
+ROS describes an observational study to be the opposite of a designed (randomized) experiment.
+
+\vfill
+
+With an observational study, under this definition, there may or may not be a direct manipulation of the treatment. Most times there is not a direct intervention.
+
+\vfill
+
+Generally, it is not reasonable to consider the treatment assignment as random across the groups. This implies that there are often systematic differences across treatment groups, perhaps with covariates (x) that explain the outcome.
+
+\vfill
+
+These covariates (that are associated with the treatment _and_ outcome) are called confounders.
+
+\vfill
+
+The issue with confounders is that differences in the response could be due to the treatment _or_ the confounders themselves.
+
+\vfill
+
+The goal with causal inference for observational studies is to "control for" all possible confounders by correcting for group inbalances due to confounders.
+
+\newpage
+
+Selection bias, where units receive a treatment or control based on some non-randomized mechanism, is a major issue for causal inference in observational studies. Often treatment assignment is confounded with other information, which presents challenges in estimating treatment effects.
+
+\vfill
+
+If outcomes were compared, conditional on the confounding variable, then we _could_ make causal claims.
+
+\vfill
+
+In practice, comparisons could be made for different levels of a confounding variable  (say health status).
+
+\vfill
+
+Another option would be to fit a regression model using both the treatment and the pre-treatment confounding variable. IF, the confounding variable is the only confounding variable, AND IF the model is properly specified, this gives an estimate of the causal treatment effect.
+
+\vfill
+
+In general, this requires:
+
+1. All variables that impact the treatment assignment or outcome are included (which is complicated of the confounding variables are lurking or omitted) and
+
+2. the model is "correct"
+
+\vfill
+
+\newpage
+
+Failing to account for lurking variables results in biased estimates of the treatment effect.
+
+\vfill
+
+Consider the following "true" model:
+
+$$y_i = \beta_0 + \beta_1 z_i + \beta_2 x_i + \epsilon_i$$
+
+if $x_i$ is not included in the model, but should be, then we have $y_i = \beta_0^* + \beta_1^* z_i +  \epsilon_i$.
+
+\vfill
+
+Assume $x_i$ is a confounding variable such that $x_i = \gamma_0 + \gamma_1 z_i + \nu_i$. 
+
+\vfill
+
+Then the original model can be rewritten as
+
+$$y_i = \beta_0 + \beta_2 \gamma_0 + (\beta_1 + \beta_2 \gamma_1) z_i + \epsilon_i + \beta_2 \nu_i$$
+where $\beta_1^* = \beta_1 + \beta_2 \gamma_1$.
+
+\vfill
+
+In omitting the lurking variable, we hope to estimate $\beta_1$, but instead estimate $\beta_1^*$, which is biased unless:
+
+\vfill
+
+- $\gamma_1 = 0:$ no relationship between x and treatment or
+
+\vfill
+
+- $\beta_2 = 0$ no relationship between x and outcome
+
